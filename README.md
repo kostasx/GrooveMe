@@ -20,5 +20,7 @@ A Bookmarklet for scraping song lists from web pages and importing them to Groov
 
 ### TO DO
 
+* Import from [Wikipedia Track Listings](http://en.wikipedia.org/wiki/Spider-Man:_Original_Motion_Picture_Score)
+* Import from [IMDB OST pages](http://www.imdb.com/title/tt1033575/soundtrack)
 * Better Song name filtering
 * [Ideas?](https://github.com/kostasx/GrooveMe/issues)
