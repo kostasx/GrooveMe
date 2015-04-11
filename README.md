@@ -9,10 +9,6 @@ A Bookmarklet for scraping song lists from web pages and importing them to Groov
 
 [2] Go to GrooveShark.com, click the Bookmarklet paste the song list and press OK.
 
-### USEFUL LINKS
-
-[Bookmarklet Creator with Script Includer](http://mrcoles.com/bookmarklet/)
-
 ### CHANGELOG
 
 * Scraping song lists from Web Pages using jQuery selectors
@@ -24,3 +20,8 @@ A Bookmarklet for scraping song lists from web pages and importing them to Groov
 * Import from [IMDB OST pages](http://www.imdb.com/title/tt1033575/soundtrack)
 * Better Song name filtering
 * [Ideas?](https://github.com/kostasx/GrooveMe/issues)
+
+### USEFUL LINKS
+
+[Bookmarklet Creator with Script Includer](http://mrcoles.com/bookmarklet/)
+[GroovyLists: Convert your Spotify, LastFM, iTunes and Plaintext playlists to Grooveshark](http://groovylists.com/?do=plaintext)
