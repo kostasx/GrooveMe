@@ -8,12 +8,13 @@
 
         songsArray = prompt("Paste the Song List in here:");
 
-        songsArray = songsArray.replace(/\"|\[|\]/g,"").split(",");
+        /*** songsArray = songsArray.replace(/\"|\[|\]/g,"").split(","); ***/
+        songsArray = songsArray.replace( /\r?\n|\r/g , "," ).split(",");
         songsArray = songsArray.map(function(song){
-
             return song.trim();
-
         });
+
+        console.log("COMPILED songsArray:\n", songsArray);
 
          var ajaxCalls = []; /*** <-- This is the array that will hold all of the Ajax objects ***/
 
@@ -45,23 +46,25 @@
 
     function getSongsList(){
 
-        var songList = prompt("Enter the jQuery selector with the song list:");
-
-        var songListArray = [];
+        var songList          = prompt("Enter the jQuery selector with the song list:");
+        var songListArray     = []; /*** FOR FUTURE USE ***/
+        var songListPlainText = "";
 
         $(songList).each(function(index,el){
 
             songListArray.push( $(el).text() );
+            songListPlainText += $(el).text() + "\r\n";
 
         });
 
-        putSongsInList( songListArray, apiKey );
-
-        console.log(songListArray);
-
-        prompt("Copy to clipboard: Ctrl+C, Enter", songListArray);
-
-        return songListArray;
+        /*
+        window.songListArray     = songListArray;
+        window.songListPlainText = songListPlainText;
+        console.log(songListArray, songListPlainText);
+        */
+        
+        /* prompt("Copy to clipboard: Ctrl+C, Enter", songListArray); */
+        prompt("Copy to clipboard: Ctrl+C, Enter", songListPlainText);
 
     }
 
