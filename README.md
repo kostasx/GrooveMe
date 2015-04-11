@@ -20,4 +20,5 @@ A Bookmarklet for scraping song lists from web pages and importing them to Groov
 
 ### TO DO
 
+* Better Song name filtering
 * [Ideas?](https://github.com/kostasx/GrooveMe/issues)
