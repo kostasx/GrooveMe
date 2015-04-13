@@ -1,6 +1,6 @@
 (function($){
 
-    var apiKey         = "YOU_TINYSONG_API_KEY_HERE";
+    var apiKey         = "YOUR_TINYSONG_API_KEY_HERE";
     var songsListArray = [];
 
     /**
@@ -20,7 +20,7 @@
 
         /*** For each song name, we need to fire one Ajax call to the TinySong API ***/
         songsArray.forEach(function(song){
-            var url = "http://tinysong.com/b/" + song + "?format=json&key=" + apiKey;
+            var url = "http://tinysong.com/b/" + encodeURI(song) + "?format=json&key=" + apiKey;
             console.log("Pushing Song: ", url,"\n");
             ajaxCalls.push(  $.get( url )  );
         });
@@ -28,17 +28,30 @@
         $.when.apply( null, ajaxCalls )
         .then(function(){
 
-            var SongIdList = [];
-            var ajaxCallsReturned  = [].slice.apply(arguments); /*** arguments is an array of jqXHR objects returned from our Ajax calls ***/
+            var SongIdList        = [];
+            var songsImported     = [];
+            var songsRejected     = [];
+            var ajaxCallsReturned = [].slice.apply(arguments); /*** arguments is an array of jqXHR objects returned from our Ajax calls ***/
+
+            console.log( "ajaxCallsReturned", ajaxCallsReturned );
 
             ajaxCallsReturned.forEach(function(data,i){
-                var _songId = JSON.parse(data[0]).SongID;
+                var _data   = JSON.parse(data[0]);
+                var _songId = _data.SongID;
+
                 /*** If the song is found by the API, add it to our array of Song IDs ***/
-                if ( _songId !== undefined ) SongIdList.push( _songId );
+                if ( _songId !== undefined ) { 
+                  SongIdList.push( _songId );
+                  songsImported.push( _data.ArtistName + " - " +_data.SongName );
+                } else {
+                  songsRejected.push( _songId );
+                }
             });
 
             /*** Add our list of songs to our current playlist: http://developers.grooveshark.com/docs/js_api/#addSongsByID ***/
             window.Grooveshark.addSongsByID( SongIdList );
+            console.log( "#" + songsArray.length + " inputted.\n#" + SongIdList.length + " songs found and imported.\n#" + songsRejected.length + " songs were not found/imported.");
+            console.log( "Songs Imported:\n", songsImported );
 
             return true;
 
@@ -56,15 +69,21 @@
         var songListArray     = []; /*** FOR FUTURE USE ***/
         var songListPlainText = "";
 
+        var numOfSongsFound = $(songList).length;
+
         $(songList).each(function(index,el){
 
-            songListArray.push( $(el).text() );
-            songListPlainText += $(el).text() + "\r\n";
+            var _song = $(el).text()
+                _song = rxReplaceHashes(_song);
+
+            songListArray.push( _song );
+            songListPlainText += _song;
+            if ( index < $(songList).length - 1 ) songListPlainText += "\r\n";
 
         });
 
         /* prompt("Copy to clipboard: Ctrl+C, Enter", songListArray); */
-        prompt("Copy to clipboard: Ctrl+C, Enter", songListPlainText);
+        prompt( "#" + numOfSongsFound + " songs found. Copy to clipboard: Ctrl+C, Enter", songListPlainText);
         return songListPlainText;
 
     }
@@ -85,6 +104,15 @@
         return songlist;
 
     }
+
+    /**
+     * Replace hashes with 'No.' from String
+     * @param {String} Input String which might contain hashes
+     * @return {String} Input String with hashes replaced with 'No.' strings
+     */
+     function rxReplaceHashes(s){
+      return s.replace("#","No.");
+     }
 
     /**
      * Remove text inside parentheses from String
@@ -126,7 +154,7 @@
       if ( match !== null ){
 
         s = match[1].trim();
-        console.log("match[1].trim() ",match[1].trim());
+        /* console.log("match[1].trim() ",match[1].trim()); */
 
       } 
 
@@ -155,9 +183,9 @@
 
             if ( _i > -1 ){
 
-              songArtist = performed[_i];   // WE'VE GOT AN ENTRY!
+              songArtist = performed[_i];   /* WE'VE GOT AN ENTRY! */
 
-            } else {  // We need the composer...
+            } else {  /* We need the composer... */
 
               _i = performed.reIndexOf(/composed/);
 
@@ -165,7 +193,15 @@
 
                 songArtist = performed[_i];
 
-              } else { // Look for something else? 'Written' by?
+              } else { /* Look for something else? 'Written' by? */
+
+                _i = performed.reIndexOf(/written/);
+
+                if ( _i > -1 ) {
+
+                  songArtist = performed[_i];
+
+                } 
 
               }
 
@@ -204,8 +240,16 @@
 
         $soundtracksContent.find(".list").children().each(parseIMDBList);
 
-        console.log(songsListArray);
-        copy(songsListArray);
+        /* console.log(songsListArray); */
+
+        var _songsListPlainText = [];
+        songsListArray.forEach(function(song, index){
+          _songsListPlainText += song.songArtist + " - " + song.songName;
+          if ( index < songsListArray.length - 1 ) _songsListPlainText += "\r\n";
+        });
+
+        /* prompt("Copy to clipboard: Ctrl+C, Enter", songListArray); */
+        prompt( "#" + songsListArray.length + " songs found. Copy to clipboard: Ctrl+C, Enter", _songsListPlainText );
 
     }
 
